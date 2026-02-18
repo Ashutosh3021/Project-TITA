@@ -10,7 +10,7 @@ from .hardware import ModelConfig, get_hardware_config
 env_path = Path(__file__).parent.parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
-WAKE_WORD: str = os.getenv("WAKE_WORD", "Tita")
+WAKE_WORD: str = os.getenv("WAKE_WORD", "multi-mode")
 OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 

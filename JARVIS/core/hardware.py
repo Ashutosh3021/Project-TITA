@@ -75,7 +75,7 @@ class HardwareDetector:
             
             return profile, cls.MODEL_PROFILES[profile]
             
-        except Exception:
+        except (RuntimeError, AttributeError):
             return "cpu", cls.MODEL_PROFILES["cpu"]
     
     @classmethod
@@ -86,7 +86,7 @@ class HardwareDetector:
                 device_props = torch.cuda.get_device_properties(0)
                 vram_gb = device_props.total_memory / (1024**3)
                 gpu_name = device_props.name
-            except Exception:
+            except (RuntimeError, AttributeError):
                 gpu_name = "Unknown GPU"
                 vram_gb = 0.0
             hardware_info = f"{gpu_name} ({vram_gb:.1f} GB VRAM)"
@@ -96,7 +96,6 @@ class HardwareDetector:
         banner_lines = [
             "=" * 60,
             "                JARVIS VOICE ASSISTANT",
-            "                      Wake Word: Tita",
             "=" * 60,
             f"Hardware Profile: {profile.upper()}",
             f"Hardware: {hardware_info}",

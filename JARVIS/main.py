@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
-JARVIS - Main Entry Point
+JARVIS - Prototype Main Entry Point
 
-Wake word: "Tita"
-Intelligent voice assistant with ReAct-based agent capabilities.
+Press SPACE to activate JARVIS
+Simple voice assistant with keyboard trigger
 """
 
-import asyncio
 import logging
 import os
 import sys
@@ -31,34 +30,76 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def main() -> None:
-    """Main entry point for JARVIS."""
+def process_command(text: str) -> str:
+    """Process user command and return response."""
+    text_lower = text.lower()
+    
+    # Simple command handling for prototype
+    if "hello" in text_lower or "hi" in text_lower:
+        return "Hello Boss! How can I help you today?"
+    
+    elif "time" in text_lower:
+        from datetime import datetime
+        return f"The current time is {datetime.now().strftime('%I:%M %p')}"
+    
+    elif "date" in text_lower:
+        from datetime import datetime
+        return f"Today is {datetime.now().strftime('%A, %B %d, %Y')}"
+    
+    elif "your name" in text_lower or "who are you" in text_lower:
+        return "I am JARVIS, your personal voice assistant."
+    
+    elif "quit" in text_lower or "exit" in text_lower or "goodbye" in text_lower:
+        return "Goodbye Boss! Have a great day!"
+    
+    else:
+        return f"I heard you say: {text}. I'm a prototype, so my capabilities are limited."
+
+
+def main() -> None:
+    """Main entry point for JARVIS prototype."""
     logger.info("=" * 60)
-    logger.info("JARVIS Voice Assistant Starting...")
-    logger.info("Wake word: 'Tita'")
+    logger.info("JARVIS PROTOTYPE")
     logger.info("=" * 60)
     
-    # TODO: Initialize core components
-    # - Hardware detection
-    # - Wake word engine
-    # - Voice pipeline (STT/TTS)
-    # - LLM brain
-    # - Memory system
-    # - Tools
+    print("\n" + "=" * 60)
+    print("JARVIS VOICE ASSISTANT - PROTOTYPE")
+    print("=" * 60)
+    print()
+    print("Activation: Press SPACE bar")
+    print()
+    print("How to use:")
+    print("1. Press SPACE to activate")
+    print("2. Wait for beep")
+    print("3. Speak your command")
+    print("4. JARVIS will respond")
+    print("5. Press SPACE again for next command")
+    print()
+    print("Press Ctrl+C to stop")
+    print("=" * 60 + "\n")
     
-    logger.info("JARVIS ready! Say 'Tita' to activate.")
-    
-    # Main loop placeholder
     try:
-        while True:
-            await asyncio.sleep(1)
+        # Import and initialize voice pipeline
+        from JARVIS.voice import VoicePipeline
+        
+        logger.info("Initializing voice pipeline...")
+        pipeline = VoicePipeline()
+        
+        logger.info("JARVIS ready! Press SPACE to activate.")
+        print("✓ JARVIS is ready!")
+        print("Press SPACE to start...\n")
+        
+        # Start listening
+        pipeline.listen_and_respond(process_command)
+        
     except KeyboardInterrupt:
-        logger.info("Shutting down JARVIS...")
+        print("\n\nShutting down JARVIS...")
+        logger.info("Shutdown by user")
+    except Exception as e:
+        logger.exception(f"Fatal error: {e}")
+        print(f"\nError: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except Exception as e:
-        logger.exception("Fatal error in main loop")
-        sys.exit(1)
+    main()

@@ -11,65 +11,67 @@ import venv
 from pathlib import Path
 
 
+VENV_DIR = Path(".venv")
+
+
 def print_step(step_num: int, message: str) -> None:
-    """Print a formatted step message."""
-    print(f"\n{'='*60}")
+    print("\n" + "=" * 60)
     print(f"STEP {step_num}: {message}")
-    print(f"{'='*60}\n")
+    print("=" * 60 + "\n")
 
 
 def create_virtual_environment() -> None:
-    """Create Python virtual environment."""
-    venv_dir = Path("venv")
-    
-    if venv_dir.exists():
+    """Create Python virtual environment if it doesn't exist."""
+    if VENV_DIR.exists():
         print("Virtual environment already exists. Skipping creation.")
         return
-    
+
     print("Creating virtual environment...")
-    venv.create(venv_dir, with_pip=True)
-    print(f"Virtual environment created at: {venv_dir.absolute()}")
+    venv.create(VENV_DIR, with_pip=True)
+    print(f"Virtual environment created at: {VENV_DIR.absolute()}")
 
 
 def get_python_executable() -> str:
-    """Get the Python executable path from venv."""
-    if os.name == 'nt':  # Windows
-        return str(Path("venv/Scripts/python.exe").absolute())
-    else:  # Linux/Mac
-        return str(Path("venv/bin/python").absolute())
-
-
-def get_pip_executable() -> str:
-    """Get the pip executable path from venv."""
-    if os.name == 'nt':  # Windows
-        return str(Path("venv/Scripts/pip.exe").absolute())
-    else:  # Linux/Mac
-        return str(Path("venv/bin/pip").absolute())
+    """Return venv python executable path."""
+    if os.name == "nt":
+        return str((VENV_DIR / "Scripts" / "python.exe").absolute())
+    return str((VENV_DIR / "bin" / "python").absolute())
 
 
 def install_requirements() -> None:
-    """Install requirements from requirements.txt."""
-    pip = get_pip_executable()
-    
+    """Upgrade pip and install requirements."""
+    python = get_python_executable()
+
     print("Upgrading pip...")
-    subprocess.run([pip, "install", "--upgrade", "pip"], check=True)
-    
+    subprocess.run(
+        [python, "-m", "pip", "install", "--upgrade", "pip"],
+        check=True
+    )
+
     print("Installing requirements (this may take a few minutes)...")
-    subprocess.run([pip, "install", "-r", "requirements.txt"], check=True)
+    subprocess.run(
+        [python, "-m", "pip", "install", "-r", "requirements.txt"],
+        check=True
+    )
+
     print("Requirements installed successfully!")
 
 
 def install_playwright() -> None:
     """Install Playwright browsers."""
     python = get_python_executable()
-    
+
     print("Installing Playwright browsers...")
-    subprocess.run([python, "-m", "playwright", "install"], check=True)
+    subprocess.run(
+        [python, "-m", "playwright", "install"],
+        check=True
+    )
+
     print("Playwright browsers installed!")
 
 
 def create_directories() -> None:
-    """Create necessary project directories."""
+    """Create project directories."""
     directories = [
         "data/chroma_db",
         "data/models",
@@ -82,13 +84,12 @@ def create_directories() -> None:
         "JARVIS/ui",
         "tests"
     ]
-    
+
     print("Creating project directories...")
     for directory in directories:
         Path(directory).mkdir(parents=True, exist_ok=True)
         print(f"  Created: {directory}")
-    
-    # Create __init__.py files
+
     init_dirs = [
         "JARVIS",
         "JARVIS/core",
@@ -99,7 +100,7 @@ def create_directories() -> None:
         "JARVIS/ui",
         "tests"
     ]
-    
+
     print("\nCreating __init__.py files...")
     for directory in init_dirs:
         init_file = Path(directory) / "__init__.py"
@@ -108,49 +109,44 @@ def create_directories() -> None:
 
 
 def copy_env_example() -> None:
-    """Copy .env.example to .env if it doesn't exist."""
+    """Copy .env.example to .env if needed."""
     env_file = Path(".env")
     env_example = Path(".env.example")
-    
+
     if env_file.exists():
         print(".env file already exists. Skipping.")
         return
-    
+
     if env_example.exists():
         print("Creating .env from .env.example...")
         env_file.write_text(env_example.read_text())
         print(".env file created. Please update it with your credentials.")
     else:
-        print("Warning: .env.example not found. Please create .env manually.")
+        print("Warning: .env.example not found. Create .env manually.")
 
 
 def print_success() -> None:
-    """Print success message with next steps."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SETUP COMPLETE!")
-    print("="*60)
-    print("\nJARVIS project has been successfully set up!")
+    print("=" * 60)
     print("\nNext steps:")
-    print("  1. Update .env file with your API credentials")
-    print("  2. Install and start Ollama (https://ollama.com)")
-    print("  3. Download required models (run: python download_models.py)")
-    print("  4. Start the assistant (run: python -m JARVIS.main)")
-    print("\nDirectory structure:")
-    print("  JARVIS/       - Core assistant modules")
-    print("  data/         - Database, models, and logs")
-    print("  tests/        - Unit tests")
+    print("  1. Update .env file with your credentials")
+    print("  2. Install and start Ollama")
+    print("  3. Download required models (python download_models.py)")
+    print("  4. Start assistant (python -m JARVIS.main)")
     print("\nTo activate the virtual environment:")
-    if os.name == 'nt':
-        print("  venv\\Scripts\\activate")
+
+    if os.name == "nt":
+        print("  .venv\\Scripts\\Activate.ps1")
     else:
-        print("  source venv/bin/activate")
-    print("="*60 + "\n")
+        print("  source .venv/bin/activate")
+
+    print("=" * 60 + "\n")
 
 
 def main() -> None:
-    """Main setup function."""
     print_step(0, "JARVIS Project Setup")
-    
+
     try:
         create_virtual_environment()
         install_requirements()

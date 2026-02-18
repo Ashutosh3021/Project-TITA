@@ -15,7 +15,14 @@ fastapi
 uvicorn
 python-dotenv
 torch
+torchaudio
+transformers
 numpy
 sounddevice
 soundfile
 pyaudio
+webrtcvad-wheels
+librosa
+pyttsx3
+pynput
+pywin32; platform_system=="Windows"
