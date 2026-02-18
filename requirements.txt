@@ -5,6 +5,7 @@ ollama
 chromadb
 langchain
 langchain-community
+sentence-transformers
 duckduckgo-search
 playwright
 google-api-python-client
