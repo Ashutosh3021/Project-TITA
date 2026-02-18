@@ -230,7 +230,8 @@ class MemoryManager:
         if self.chroma:
             try:
                 chroma_stats = self.chroma.get_stats()
-                stats["chroma"].update(chroma_stats)
+                for key, value in chroma_stats.items():
+                    stats["chroma"][key] = value
             except Exception as e:
                 logger.error(f"Failed to get ChromaDB stats: {e}")
         
